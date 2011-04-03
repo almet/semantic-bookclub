@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<!DOCTYPE rdf:RDF
+        [<!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">]>
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:dct="http://purl.org/dc/terms/"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:book="http://purl.org/NET/book/vocab"
+    xml:base="http://bookclub.notmyidea.org/rdf"
+>
+
+    <!-- Book definition -->
+    <rdfs:Class rdf:ID="Book">
+        <rdfs:subClassOf rdf:resource="dct:PhysicalResource" />
+    </rdfs:Class>
+
+    <rdf:Property rdf:ID="bookId">
+        <rdfs:subPropertyOf rdf:resource="dct:identifier" />
+        <rdfs:domain rdf:resource="#Book"/>
+        <rdfs:comment>The identifier of the book</rdfs:comment>
+    </rdf:Property>
+
+    <rdf:Property rdf:ID="bookTitle">
+        <rdfs:subPropertyOf rdf:resource="dct:title" />
+        <rdfs:domain rdf:resource="#Book"/>
+        <rdfs:comment>The title of the book</rdfs:comment>
+    </rdf:Property>
+
+    <rdf:Property rdf:ID="bookAuthor">
+        <rdfs:subPropertyOf rdf:resource="dct:creator" />
+        <rdfs:domain rdf:resource="#Book"/>
+        <rdfs:comment>Book's author</rdfs:comment>
+    </rdf:Property>
+
+    <rdf:Property rdf:ID="bookPublisher">
+        <rdfs:subPropertyOf rdf:resource="dct:publisher" />
+        <rdfs:domain rdf:resource="#Book"/>
+        <rdfs:comment>Book's publisher</rdfs:comment>
+    </rdf:Property>
+
+    <rdf:Property rdf:ID="bookPublicationYear">
+        <rdfs:subPropertyOf rdf:resource="dct:issued"/>
+        <rdfs:domain rdf:resource="#Book"/>
+        <rdfs:comment>When the book was publicated</rdfs:comment>
+    </rdf:Property>
+
+    <rdf:Property rdf:ID="bookSubject">
+        <rdfs:subPropertyOf rdf:resource="dct:subject" />
+        <rdfs:domain rdf:resource="#Book"/>
+        <rdfs:comment>What is the subject of the book</rdfs:comment>
+    </rdf:Property>
+
+
+    <!-- Member definition -->
+    <rdfs:Class rdf:ID="Member">
+        <rdfs:subClassOf rdf:resource="foaf:Person" />
+    </rdfs:Class>
+
+    <rdf:Property rdf:ID="memberName">
+        <rdfs:subPropertyOf rdf:resource="foaf:name" />
+        <rdfs:domain rdf:resource="#Member"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:ID="memberSurname">
+        <rdfs:subPropertyOf rdf:resource="foaf:name" />
+        <rdfs:domain rdf:resource="#Member"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:ID="memberEmail">
+        <rdfs:subPropertyOf rdf:resource="foaf:mbox" />
+        <rdfs:domain rdf:resource="#Member"/>
+   </rdf:Property>
+
+    <rdf:Property rdf:ID="memberKnows">
+        <rdfs:subPropertyOf rdf:resource="foaf:knows" />
+        <rdfs:domain rdf:resource="#Member"/>
+    </rdf:Property>
+
+    <rdf:Property rdf:ID="owns">
+        <rdfs:subPropertyOf rdf:resource="book:ownsCopyOf" />
+        <rdfs:domain rdf:resource="#Member"/>
+    </rdf:Property>
+
+
+    <!-- Loan definition -->
+    <rdfs:Class rdf:ID="Loan" />
+
+    <rdf:Property rdf:ID="borrowedBook">
+        <rdfs:domain rdf:resource="#Loan" />
+        <rdfs:range rdf:resource="#Book" />
+    </rdf:Property>
+
+    <rdf:Property rdf:ID="borrower">
+        <rdfs:domain rdf:resource="#Loan" />
+        <rdfs:range rdf:resource="#Member" />
+    </rdf:Property>
+
+    <rdf:Property rdf:ID="bookOwner">
+        <rdfs:domain rdf:resource="#Loan" />
+        <rdfs:range rdf:resource="#Member" />
+    </rdf:Property>
+
+    <rdf:Property rdf:ID="borrowedOn">
+        <rdfs:subPropertyOf rdf:resource="dct:date" />
+        <rdfs:domain rdf:resource="#Loan" />
+    </rdf:Property>
+
+</rdf:RDF>
