@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+<form action="{{ url_for('add_loan') }}" method="post" accept-charset="utf-8">
+    {{ form.hidden_tag() }}
+    
+    <p>{{ form.owner.label }}<br /> {{ form.owner }}</p>
+    <p>{{ form.borrower.label }}<br /> {{ form.borrower }}</p>
+    <p>{{ form.book.label }}<br /> {{ form.book }}</p>
+    <p>{{ form.date.label }}<br /> {{ form.date }}</p>
+    <p><input type="submit" value="Continue &rarr;"></p>
+</form>
+{% endblock %}
+
+

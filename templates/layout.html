@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Semantic Web Book club — {% block title %}{% endblock %}</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <div id="title">
+        <div class="span-24">
+            <a href="/"><h1>Semantic Web Book Club! <span class="small">Manage your loans the right way</span></h1></a>
+        </div>
+    </div>
+    <hr />
+    <div id="content" class="span-24">
+
+	{% for message in get_flashed_messages() %}
+	    <div class=info>{{ message }}</div>
+	{% endfor %}
+
+	{% block content %}{% endblock %}
+
+    </div>
+    <div id="footer"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block title %}Howdy{% endblock %}
+{% block content %}
+<a style="float:right" class="awesome large red button" href="{{ url_for('add_book') }}">add a book</a>
+<h2>List of books </h2>
+
+{% if books %}
+<table>
+    <thead><tr><th>Id</th><th>Title</th><th>Author</th><th>Publisher</th><th>Year</th></tr></thead>
+    <tbody>
+    {% for item in books %} 
+    <tr>
+        <td>{{ item.bc_bookId.first }}</td>
+        <td>{{ item.bc_bookTitle.first }}</td>
+        <td>{{ item.bc_bookAuthor.first }}</td>
+        <td>{{ item.bc_bookPublisher.first }}</td>
+        <td>{{ item.bc_bookPublicationYear.first }}</td>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}<p>no books yet</p>{% endif %}
+
+<hr />
+
+<a style="float:right" class="awesome green large button" href="{{ url_for('add_member') }}">add a member</a>
+<h2>List of members</h2>
+{% if members %}
+<table>
+    <thead><tr><th>Id</th><th>Name</th><th>Surname</th><th>Email</th></tr></thead>
+    <tbody>
+    {% for item in members %} 
+    <tr>
+        <td>{{ item.bc_memberId.first }}</td>
+        <td>{{ item.bc_memberName.first }}</td>
+        <td>{{ item.bc_memberSurname.first }}</td>
+        <td>{{ item.bc_memberEmail.first }}</td>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}<p>no members yet</p>{% endif %}
+
+<hr />
+
+<a style="float:right" class="awesome orange large button" href="{{ url_for('add_loan') }}">borrow a book</a>
+<h2>List of loans</h2>
+{% if loans %}
+<table>
+    <thead><tr><th>Borrower</th><th>Book</th><th>Book owner</th><th>Date</th><th>Action</th></tr></thead>
+    <tbody>
+    {% for item in loans %} 
+    <tr>
+        <td>{{ item.bc_borrower.first.bc_memberName.first }}</td>
+        <td>{{ item.bc_borrowedBook.first.bc_bookTitle.first }}</td>
+        <td>{{ item.bc_bookOwner.first.bc_memberName.first }}</td>
+        <td>{{ item.bc_borrowedOn.first }}</td>
+        <td><a href="{{ url_for('return_loan', book=item.bc_borrowedBook.first.bc_bookTitle.first, borrower=item.bc_borrower.first.bc_memberName.first, owner=item.bc_bookOwner.first.bc_memberName.first) }}">return it</a></td>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}<p>no loans yet</p>{% endif %}
+
+{% endblock %}

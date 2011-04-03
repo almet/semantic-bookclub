@@ -1,0 +1,9 @@
+Person ID	First Name	Family Name	emails
+1	Alison	Lambert	al@bookclub.org
+2	Cathy	Thomas	ct@bookclub.org
+3	David	Wright	dw@bookclub.org
+4	Ian	Taylor	it@bookclub.org
+5	John	Ward	jw@bookclub.org
+6	Rachel	Smith	rs@bookclub.org
+7	Sue	Richards	sr@bookclub.org
+8	Tom	Jones	tj@bookclub.org
