@@ -58,13 +58,13 @@ class BookForm(Form):
         flash("The book %s have been added" % self.title.data)
 
 class MemberForm(Form):
-    name = TextField("Name", validators=[Required()])
-    surname = TextField("Surname", validators=[Required()])
+    given_name = TextField("Given name", validators=[Required()])
+    family_name = TextField("Family name", validators=[Required()])
     email = TextField("Email address", validators=[Required()])
 
     def save(self):
-        create_member(None, self.name.data, self.surname.data, self.email.data)
-        flash("%s %s have been added" % (self.name.data, self.surname.data))
+        create_member(None, self.given_name.data, self.family_name.data, self.email.data)
+        flash("%s %s have been added" % (self.given_name.data, self.family_name.data))
 
 
 class LoanForm(Form):
@@ -120,9 +120,10 @@ def reset():
     populate()
     return redirect(url_for("index"))
 
-@app.route("/upload")
+@app.route("/debug")
 def upload():
-    pass
+    from ipdb import set_trace; set_trace()
+    return redirect(url_for("index"))
 
 @app.route("/rdf")
 def rdf():
