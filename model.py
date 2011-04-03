@@ -30,39 +30,40 @@ def create_book(id=None, title=None, author=None, publisher=None, year=None,
     if not id:
         id = str(max([int(b.dcterms_identifier.first) for b in Book.all()]) + 1)
 
-    b = Book(surf.ns.BC + id)
-    b.dcterms_identifier = id
+    book = Book(surf.ns.BC + id)
+    book.dcterms_identifier = id
 
     if title:
-        b.dcterms_title = title
+        book.dcterms_title = title
     if author:
-        b.dcterms_creator = author
+        book.dcterms_creator = author
     if publisher:
-        b.dcterms_publisher = publisher
+        book.dcterms_publisher = publisher
     if year:
-        b.dcterms_issued = year
+        book.dcterms_issued = year
     if subject:
-        b.dcterms_subject = subject
+        book.dcterms_subject = subject
 
-    b.save()
-    return b
+    book.save()
+    return book
 
 def create_member(id=None, name=None, surname=None, email=None):
-    m = Member(surf.ns.BC + name)
 
     if not id:
-        id = str(max([int(m.bc_memberId.first) for m in Member.all()]) + 1)
-    m.bc_memberId = id
+        id = str(max([int(m.dcterms_identifier.first) for m in Member.all()]) + 1)
+
+    member = Member(surf.ns.BC + name)
+    member.dcterms_identifier = id
 
     if name:
-        m.foaf_givenName = name
+        member.foaf_givenName = name
     if surname:
-        m.foaf_familyName = surname
+        member.foaf_familyName = surname
     if email:
-        m.foaf_mbox = email
+        member.foaf_mbox = email
 
-    m.save()
-    return m
+    member.save()
+    return member
 
 def create_loan(owner, borrower, book, date):
     l = Loan()
