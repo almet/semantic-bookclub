@@ -10,11 +10,11 @@
     <tbody>
     {% for item in books %} 
     <tr>
-        <td>{{ item.bc_bookId.first }}</td>
-        <td>{{ item.bc_bookTitle.first }}</td>
-        <td>{{ item.bc_bookAuthor.first }}</td>
-        <td>{{ item.bc_bookPublisher.first }}</td>
-        <td>{{ item.bc_bookPublicationYear.first }}</td>
+        <td>{{ item.dcterms_identifier.first }}</td>
+        <td>{{ item.dcterms_title.first }}</td>
+        <td>{{ item.dcterms_creator.first }}</td>
+        <td>{{ item.dcterms_publisher.first }}</td>
+        <td>{{ item.dcterms_issued.first }}</td>
     {% endfor %}
     </tbody>
 </table>
@@ -31,9 +31,9 @@
     {% for item in members %} 
     <tr>
         <td>{{ item.bc_memberId.first }}</td>
-        <td>{{ item.bc_memberName.first }}</td>
-        <td>{{ item.bc_memberSurname.first }}</td>
-        <td>{{ item.bc_memberEmail.first }}</td>
+        <td>{{ item.foaf_givenName.first }}</td>
+        <td>{{ item.foaf_familyName.first }}</td>
+        <td>{{ item.foaf_mbox.first }}</td>
     {% endfor %}
     </tbody>
 </table>
@@ -49,11 +49,11 @@
     <tbody>
     {% for item in loans %} 
     <tr>
-        <td>{{ item.bc_borrower.first.bc_memberName.first }}</td>
-        <td>{{ item.bc_borrowedBook.first.bc_bookTitle.first }}</td>
-        <td>{{ item.bc_bookOwner.first.bc_memberName.first }}</td>
+        <td>{{ item.bc_borrower.first.foaf_givenName.first }}</td>
+        <td>{{ item.bc_borrowedBook.first.dcterms_title.first }}</td>
+        <td>{{ item.bc_bookOwner.first.foaf_givenName.first }}</td>
         <td>{{ item.bc_borrowedOn.first }}</td>
-        <td><a href="{{ url_for('return_loan', book=item.bc_borrowedBook.first.bc_bookTitle.first, borrower=item.bc_borrower.first.bc_memberName.first, owner=item.bc_bookOwner.first.bc_memberName.first) }}">return it</a></td>
+        <td><a href="{{ url_for('return_loan', book=item.bc_borrowedBook.first.dcterms_title.first, borrower=item.bc_borrower.first.foaf_givenName.first, owner=item.bc_bookOwner.first.foaf_givenName.first) }}">return it</a></td>
     {% endfor %}
     </tbody>
 </table>

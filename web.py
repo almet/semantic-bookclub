@@ -16,10 +16,10 @@ app.config.from_envvar('BOOKCLUB_SETTINGS', silent=True)
 
 # choices to be used in forms
 def members():
-    return lambda :[(m.bc_memberName.first,) *2 for m in Member.all()]
+    return lambda :[(m.foaf_givenName.first,) *2 for m in Member.all()]
 
 def books():
-    return lambda :[(b.bc_bookId.first, b.bc_bookTitle.first) for b in Book.all()]
+    return lambda :[(b.dcterms_identifier.first, b.dcterms_title.first) for b in Book.all()]
 
 # Forms
 
@@ -52,7 +52,7 @@ class BookForm(Form):
                 self.publisher.data, self.year.data, self.subject.data)
 
         # get back the member resource
-        owner = Member.get_by(bc_memberName=self.owner.data).one()
+        owner = Member.get_by(foaf_givenName=self.owner.data).one()
         book.bc_bookOwner.append(owner)
         book.update()
         flash("The book %s have been added" % self.title.data)
@@ -74,9 +74,9 @@ class LoanForm(Form):
     date = TextField("Date of the loan", validators=[Required()])
 
     def save(self):
-        owner = Member.get_by(bc_memberName=self.owner.data).one()
-        borrower = Member.get_by(bc_memberName=self.borrower.data).one()
-        book = Book.get_by(bc_bookId=self.book.data).one()
+        owner = Member.get_by(foaf_givenName=self.owner.data).one()
+        borrower = Member.get_by(foaf_givenName=self.borrower.data).one()
+        book = Book.get_by(dcterms_identifier=self.book.data).one()
         create_loan(owner, borrower, book, self.date.data)
         book_title = dict(self.book.choices)[self.book.data]
         flash("%s have successfully borrowed %s" % (self.borrower.data, book_title))
@@ -87,8 +87,8 @@ class FriendForm(Form):
     person2 = SelectField("Seconf person", validators=[Required()], choices=members())
 
     def save(self):
-        p1 = Member.get_by(bc_memberName=self.person1.data).one()
-        p2 = Member.get_by(bc_memberName=self.person2.data).one()
+        p1 = Member.get_by(foaf_givenName=self.person1.data).one()
+        p2 = Member.get_by(foaf_givenName=self.person2.data).one()
         p1.foaf_knows.append(p2)
         p1.update()
         flash("%s and %s are now friends" % (self.person1.data, self.person2.data))
@@ -158,11 +158,11 @@ def return_loan(book, owner, borrower):
     # get the book with a SPARQL query
     answer = query('SELECT ?loan WHERE { \
             ?loan bc:borrowedBook ?book . \
-            ?book bc:bookTitle "%s" . \
+            ?book dct:title "%s" . \
             ?loan bc:borrower ?borrower . \
-            ?borrower bc:memberName "%s" . \
+            ?borrower foaf:givenName "%s" . \
             ?loan bc:bookOwner ?bookOwner . \
-            ?bookOwner bc:memberName "%s"}' % (book, borrower, owner))
+            ?bookOwner foaf:givenName "%s"}' % (book, borrower, owner))
     # TODO handle error
 
     # get the loan from the triple store
@@ -180,9 +180,9 @@ def requests():
 
     # 1. return all the people who own a book with a particular title
     title = "A Semantic Web Primer"
-    q1 = 'SELECT ?name WHERE { _:member bc:owns _:book .\
-             _:book bc:bookTitle "%s" .\
-             _:member bc:memberName ?name }' % title
+    q1 = 'SELECT ?name WHERE { _:member book:ownsCopyOf _:book .\
+             _:book dct:title "%s" .\
+             _:member foaf:givenName ?name }' % title
 
     # 2. Return all books, and the people who have borrowed them, which were 
     # borrowed earlier than a given date.
@@ -192,8 +192,8 @@ def requests():
     q2 = 'SELECT ?bookTitle ?borrowerName\
             WHERE { _:loan bc:borrowedBook _:book .\
             _:loan bc:borrower _:borrower .\
-            _:borrower bc:memberName ?borrowerName .\
-            _:book bc:bookTitle ?bookTitle .\
+            _:borrower foaf:givenName ?borrowerName .\
+            _:book dct:title ?bookTitle .\
             _:loan bc:borrowedOn ?date .\
             FILTER (?date < "2006-02-20")\
             }'
@@ -204,23 +204,23 @@ def requests():
     q3 = 'SELECT ?name ?email\
             WHERE { _:loan bc:bookOwner _:owner .\
                     _:loan bc:borrower _:borrower .\
-                    _:borrower bc:memberName ?name .\
-                    _:borrower bc:memberEmail ?email .\
-                    _:owner bc:memberEmail "%s"\
+                    _:borrower foaf:givenName ?name .\
+                    _:borrower foaf:mbox ?email .\
+                    _:owner foaf:mbox "%s"\
             }' % email
 
     # 4.A person "A" say, knows a set of people P. Find all the titles of the 
     # books belonging to the people in P and those who are known to the people 
     # in P, not including the books of "A" (this represents the set of books which 
     # "A" can borrow!)
-    # FIXME FILTER (NOT EXISTS {_:a bc:owns ?book})\
+    # FIXME FILTER (NOT EXISTS {_:a book:ownsCopyOf ?book})\
     q4 = 'SELECT DISTINCT ?title\
-            WHERE { ?book bc:bookTitle ?title .\
-                    _:a bc:memberEmail "%s" .\
+            WHERE { ?book dct:title ?title .\
+                    _:a foaf:mbox "%s" .\
                     _:a foaf:knows ?p .\
-                    { _:p bc:owns ?book }\
+                    { _:p book:ownsCopyOf ?book }\
               UNION { _:p foaf:knows _:p2 .\
-                      _:p2 bc:owns ?book }\
+                      _:p2 book:ownsCopyOf ?book }\
             }' % email
 
     return render_template("requests.html", 

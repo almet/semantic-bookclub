@@ -23,29 +23,26 @@ Book = session.get_class(surf.ns.BC.Book)
 Member = session.get_class(surf.ns.BC.Member)
 Loan = session.get_class(surf.ns.BC.Loan)
 
-class BookRepository(object):
-    """Manage basic CRUD operations on the resources"""
-
 # Useful functions to create entities
 def create_book(id=None, title=None, author=None, publisher=None, year=None, 
         subject=None):
 
     if not id:
-        id = str(max([int(b.bc_bookId.first) for b in Book.all()]) + 1)
+        id = str(max([int(b.dcterms_identifier.first) for b in Book.all()]) + 1)
 
     b = Book(surf.ns.BC + id)
-    b.bc_bookId = id
+    b.dcterms_identifier = id
 
     if title:
-        b.bc_bookTitle = title
+        b.dcterms_title = title
     if author:
-        b.bc_bookAuthor = author
+        b.dcterms_creator = author
     if publisher:
-        b.bc_bookPublisher = publisher
+        b.dcterms_publisher = publisher
     if year:
-        b.bc_bookPublicationYear = year
+        b.dcterms_issued = year
     if subject:
-        b.bc_bookSubject = subject
+        b.dcterms_subject = subject
 
     b.save()
     return b
@@ -58,11 +55,11 @@ def create_member(id=None, name=None, surname=None, email=None):
     m.bc_memberId = id
 
     if name:
-        m.bc_memberName = name
+        m.foaf_givenName = name
     if surname:
-        m.bc_memberSurname = surname
+        m.foaf_familyName = surname
     if email:
-        m.bc_memberEmail = email
+        m.foaf_mbox = email
 
     m.save()
     return m
@@ -104,25 +101,25 @@ def populate():
     # import friendships
     with open("samples/knows.txt") as f:
         for m1, knows, m2 in csv.reader(f, delimiter="\t"):
-            memberA = Member.get_by(bc_memberName=m1).one()
-            memberB = Member.get_by(bc_memberName=m2).one()
+            memberA = Member.get_by(foaf_givenName=m1).one()
+            memberB = Member.get_by(foaf_givenName=m2).one()
             memberA.foaf_knows.append(memberB)
             memberA.update()
 
     # import loans
     with open("samples/lendings.txt") as f:
         for row in csv.reader(f, delimiter='\t'):
-            owner = Member.get_by(bc_memberName=row[0]).one()
-            borrower = Member.get_by(bc_memberName=row[4]).one()
-            book = Book.get_by(bc_bookId=row[2]).one()
+            owner = Member.get_by(foaf_givenName=row[0]).one()
+            borrower = Member.get_by(foaf_givenName=row[4]).one()
+            book = Book.get_by(dcterms_identifier=row[2]).one()
             create_loan(owner, borrower, book, row[6])
 
     # import book owners
     with open("samples/owns.txt") as f:
         for m, owns, bookId in csv.reader(f, delimiter="\t"):
-            member = Member.get_by(bc_memberName=m).one()
-            book = Book.get_by(bc_bookId=bookId).one()
-            member.bc_owns.append(book)
+            member = Member.get_by(foaf_givenName=m).one()
+            book = Book.get_by(dcterms_identifier=bookId).one()
+            member.book_ownsCopyOf.append(book)
             member.update()
 
     session.commit()
@@ -143,6 +140,8 @@ def raw_query(sparql):
     """Do a sparql query and return the (head, result) tuple"""
     return store.execute_sparql('prefix bc: <http://notmyidea.org/bookclub/>\
             prefix foaf: <http://xmlns.com/foaf/0.1/>\
+            prefix book: <http://purl.org/NET/book/vocab/>\
+            prefix dct: <http://purl.org/dc/terms/>\
             %s' % sparql).values()
 
 def persist_to_rdf(filename):
