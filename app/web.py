@@ -53,8 +53,8 @@ class BookForm(Form):
 
         # get back the member resource
         owner = Member.get_by(foaf_givenName=self.owner.data).one()
-        book.bc_bookOwner.append(owner)
-        book.update()
+        owner.book_ownsCopyOf.append(book)
+        owner.update()
         flash("The book %s have been added" % self.title.data)
 
 class MemberForm(Form):
@@ -100,7 +100,7 @@ class BookOwningForm(Form):
     def save(self):
         member = Member.get_by(foaf_givenName=self.member.data).one()
         book = Book.get_by(dcterms_identifier=self.book.data).one()
-        book.bc_bookOwner.append(member)
+        member.book_ownsCopyOf.append(book)
         member.update()
         flash("%s now owns %s" % (member.foaf_givenName.first, book.dcterms_title.first))
 

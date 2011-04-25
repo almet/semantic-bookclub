@@ -14,6 +14,14 @@ sc.open("db")
 store = surf.Store(reader="rdflib", writer="rdflib", rdflib_store=sc)
 session = surf.Session(store)
 
+# defines the prefixes
+NAMESPACES = {
+    'bc': 'http://notmyidea.org/bookclub/',
+    'foaf': 'http://xmlns.com/foaf/0.1/',
+    'book': 'http://purl.org/NET/book/vocab/',
+    'dct': 'http://purl.org/dc/terms/'
+}
+
 # register the namespaces used here
 surf.ns.register(bc="http://notmyidea.org/bookclub/")
 surf.ns.register(book="http://purl.org/NET/book/vocab/")
@@ -52,7 +60,7 @@ def create_member(id=None, name=None, surname=None, email=None):
     if not id:
         id = str(max([int(m.dcterms_identifier.first) for m in Member.all()]) + 1)
 
-    member = Member(surf.ns.BC + name)
+    member = Member(surf.ns.BC + email)
     member.dcterms_identifier = id
 
     if name:
@@ -66,7 +74,7 @@ def create_member(id=None, name=None, surname=None, email=None):
     return member
 
 def create_loan(owner, borrower, book, date):
-    l = Loan()
+    l = Loan(namespace=surf.ns.BC)
     l.bc_bookOwner = owner
     l.bc_borrower = borrower
     l.bc_borrowedBook = book
@@ -139,15 +147,15 @@ def query(sparql):
 
 def raw_query(sparql):
     """Do a sparql query and return the (head, result) tuple"""
-    return store.execute_sparql('prefix bc: <http://notmyidea.org/bookclub/>\
-            prefix foaf: <http://xmlns.com/foaf/0.1/>\
-            prefix book: <http://purl.org/NET/book/vocab/>\
-            prefix dct: <http://purl.org/dc/terms/>\
-            %s' % sparql).values()
+    prefixes = " ".join(["prefix %s: <%s>" % (p[0], p[1]) 
+        for p in NAMESPACES.items()])
+    return store.execute_sparql('%s %s' % (prefixes, sparql)).values()
 
 def persist_to_rdf(filename):
     """Shortcut to persist the graph to a rdf file"""
     store.writer.graph.serialize(filename)
 
 def persist(format="xml"):
+    for prefix, uri in NAMESPACES.items():
+        store.writer.graph.bind(prefix, uri)
     return store.writer.graph.serialize(format=format)
