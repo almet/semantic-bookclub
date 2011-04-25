@@ -2,10 +2,10 @@ Book Id	Title	Author	Publisher 	Year
 1	A Semantic Web Primer	"G. Antoniou, Frank van Harmelen"	MIT Press	2004
 2	Towards the Semantic Web: Ontology Driven Knowledge Management	"J. Davies, Dieter Fensel, Frank van Harmelen"	John Wiley	2003
 3	Explorer's Guide To the Semantic Web	Thomas Passin	Manning	2004
-4	"The Semantic Web: A Guide to the Future of XML, Web Services and Knowledge Management"	"Daconta, M., et al."	John Wiley	2003
-5	Practical RDF	"Powers, S."	O'Reilly	2003
-6	Spinning the Web	"Fensel, D., et al"	MIT Press	2002
-7	Professional XML Metadata	"Ahmed, K., et al."	Wrox	2000
+4	"The Semantic Web: A Guide to the Future of XML, Web Services and Knowledge Management"	"Daconta M. et al."	John Wiley	2003
+5	Practical RDF	"Powers S."	O'Reilly	2003
+6	Spinning the Web	"Fensel D. et al"	MIT Press	2002
+7	Professional XML Metadata	"Ahmed K. et al."	Wrox	2000
 8	Data on the Web	"Serge Abiteboul, Peter Buneman, Dan Suciu"	Morgan Kaufmann	2000
 9	XQuery: The XML Query Language	Michael Brundage	Adison-Wesley	2004
 10	XQuery from the Experts	Howard Katz	Adison-Wesley	2004

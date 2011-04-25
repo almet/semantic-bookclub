@@ -32,7 +32,7 @@ Member = session.get_class(surf.ns.BC.Member)
 Loan = session.get_class(surf.ns.BC.Loan)
 
 # Useful functions to create entities
-def create_book(id=None, title=None, author=None, publisher=None, year=None, 
+def create_book(id=None, title=None, authors=None, publisher=None, year=None, 
         subject=None):
 
     if not id:
@@ -43,8 +43,10 @@ def create_book(id=None, title=None, author=None, publisher=None, year=None,
 
     if title:
         book.dcterms_title = title
-    if author:
-        book.dcterms_creator = author
+    if authors:
+        # split authors on commas
+        for author in authors.split(', '):
+            book.dcterms_creator.append(author)
     if publisher:
         book.dcterms_publisher = publisher
     if year:

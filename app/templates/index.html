@@ -9,13 +9,17 @@
 
 {% if books %}
 <table>
-    <thead><tr><th>Id</th><th>Title</th><th>Author</th><th>Publisher</th><th>Year</th></tr></thead>
+    <thead><tr><th>Id</th><th>Title</th><th>Authors</th><th>Publisher</th><th>Year</th></tr></thead>
     <tbody>
     {% for item in books %} 
     <tr>
         <td>{{ item.dcterms_identifier.first }}</td>
         <td>{{ item.dcterms_title.first }}</td>
-        <td>{{ item.dcterms_creator.first }}</td>
+        <td>
+            {% for creator in item.dcterms_creator %}
+            {{ creator }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </td>
         <td>{{ item.dcterms_publisher.first }}</td>
         <td>{{ item.dcterms_issued.first }}</td>
     {% endfor %}

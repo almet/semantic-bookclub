@@ -41,14 +41,14 @@ class SelectField(BaseSelectField):
 
 class BookForm(Form):
     title = TextField("Title", validators=[Required()])
-    author = TextField("Author", validators=[Required()])
+    authors = TextField("Authors", validators=[Required()])
     publisher = TextField("Publisher", validators=[Required()])
     year = TextField("Publication year")
     subject = TextField("What the book is about ? (separated by commas")
     owner = SelectField("Who owns this book ?", choices=members())
 
     def save(self):
-        book = create_book(None, self.title.data, self.author.data, 
+        book = create_book(None, self.title.data, self.authors.data, 
                 self.publisher.data, self.year.data, self.subject.data)
 
         # get back the member resource

@@ -1,4 +1,3 @@
 * Use real dates instaead of strings
 * Finish the last request
-* Books can have multiple authors
 * Publish the schema in rdf if a request is asking for a particular data format 
