@@ -1,3 +1,2 @@
 * Use real dates instaead of strings
 * Finish the last request
-* Publish the schema in rdf if a request is asking for a particular data format 

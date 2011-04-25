@@ -1,7 +1,7 @@
 from flask import *
 from werkzeug.wrappers import Response
 
-from flaskext.wtf import (Form, SelectField as BaseSelectField, DateField, 
+from flaskext.wtf import (Form, SelectField as BaseSelectField, DateField,
         Required, TextField)
 
 from model import *
@@ -48,7 +48,7 @@ class BookForm(Form):
     owner = SelectField("Who owns this book ?", choices=members())
 
     def save(self):
-        book = create_book(None, self.title.data, self.authors.data, 
+        book = create_book(None, self.title.data, self.authors.data,
                 self.publisher.data, self.year.data, self.subject.data)
 
         # get back the member resource
@@ -120,11 +120,14 @@ def deal_with_form(formClass, template):
 # Controllers
 @app.route("/")
 def index():
-    return render_template("index.html", 
-            books = Book.all(), 
-            members = Member.all(),
-            loans = Loan.all()
-            )
+    if 'application/rdf+xml' == request.accept_mimetypes.best:
+        return rdf()
+    else:
+        return render_template("index.html",
+                books = Book.all(),
+                members = Member.all(),
+                loans = Loan.all()
+                )
 
 @app.route("/reset")
 def reset():
@@ -141,7 +144,7 @@ def rdf():
     response = Response(persist())
     response.headers['content-type'] = "application/rdf+xml"
     return response
-    
+
 @app.route("/n3")
 def n3():
     response = Response(persist('n3'))
@@ -201,7 +204,7 @@ def requests():
              _:book dct:title "%s" .\
              _:member foaf:givenName ?name }' % title
 
-    # 2. Return all books, and the people who have borrowed them, which were 
+    # 2. Return all books, and the people who have borrowed them, which were
     # borrowed earlier than a given date.
 
     # FIXME Consider using a real date comparison
@@ -215,8 +218,8 @@ def requests():
             FILTER (?date < "2006-02-20")\
             }'
 
-    # 3. Identify the names and emails of people that have borrowed books from 
-    # a person identified by an email address. 
+    # 3. Identify the names and emails of people that have borrowed books from
+    # a person identified by an email address.
     email = "al@bookclub.org"
     q3 = 'SELECT ?name ?email\
             WHERE { _:loan bc:bookOwner _:owner .\
@@ -226,9 +229,9 @@ def requests():
                     _:owner foaf:mbox "%s"\
             }' % email
 
-    # 4.A person "A" say, knows a set of people P. Find all the titles of the 
-    # books belonging to the people in P and those who are known to the people 
-    # in P, not including the books of "A" (this represents the set of books which 
+    # 4.A person "A" say, knows a set of people P. Find all the titles of the
+    # books belonging to the people in P and those who are known to the people
+    # in P, not including the books of "A" (this represents the set of books which
     # "A" can borrow!)
     # FIXME FILTER (NOT EXISTS {_:a book:ownsCopyOf ?book})\
     q4 = 'SELECT DISTINCT ?title\
@@ -240,7 +243,7 @@ def requests():
                       _:p2 book:ownsCopyOf ?book }\
             }' % email
 
-    return render_template("requests.html", 
+    return render_template("requests.html",
             q1=q1, q1_results=query(q1),
             q2=q2, q2_results=query(q2),
             q3=q3, q3_results=query(q3),
