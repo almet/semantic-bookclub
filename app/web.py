@@ -93,6 +93,17 @@ class FriendForm(Form):
         p1.update()
         flash("%s and %s are now friends" % (self.person1.data, self.person2.data))
 
+class BookOwningForm(Form):
+    member = SelectField("Member", validators=[Required()], choices=members())
+    book = SelectField("Book", validators=[Required()], choices=books())
+
+    def save(self):
+        member = Member.get_by(foaf_givenName=self.member.data).one()
+        book = Book.get_by(dcterms_identifier=self.book.data).one()
+        book.bc_bookOwner.append(member)
+        member.update()
+        flash("%s now owns %s" % (member.foaf_givenName.first, book.dcterms_title.first))
+
 
 # utils for controllers
 def deal_with_form(formClass, template):
@@ -102,7 +113,7 @@ def deal_with_form(formClass, template):
             form.save()
             return redirect(url_for("index"))
         else:
-            from ipdb import set_trace; set_trace()
+            flash("An error occured, please fill the form correctly")
 
     return render_template(template, form=form)
 
@@ -152,6 +163,11 @@ def add_loan():
 @app.route("/members/relationship")
 def add_relationship(name):
     return deal_with_form(FriendForm, "add_friend.html")
+
+@app.route("/books/addowner", methods=["POST", "GET"])
+def add_bookowner():
+    return deal_with_form(BookOwningForm, "add_bookowner.html")
+
 
 @app.route("/loans/return/<book>/<owner>/<borrower>")
 def return_loan(book, owner, borrower):
