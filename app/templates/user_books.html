@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}
+List of books for {{ member.foaf_givenName.first }} {{ member.foaf_familyName.first }}
+{% endblock %}
+{% block content %}
+<h2>List of books for {{ member.foaf_givenName.first }} {{ member.foaf_familyName.first }}</h2>
+<ul>
+    {% for book in books %}
+    <li><a href="{{ url_for('show_book', id=book.id) }}">{{ book.title }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
+

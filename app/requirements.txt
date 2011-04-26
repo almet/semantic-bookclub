@@ -1,0 +1,5 @@
+SuRF
+rdflib==3.1.0
+rdfextras==0.1
+flask
+flask-wtf

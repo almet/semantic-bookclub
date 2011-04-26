@@ -30,10 +30,11 @@
 <hr />
 
 <a style="float:right" class="awesome green large button" href="{{ url_for('add_member') }}">add a member</a>
+<a style="float:right; margin-right: 10px" class="awesome red large button" href="{{ url_for('add_friend') }}">add a friend</a>
 <h2>List of members</h2>
 {% if members %}
 <table>
-    <thead><tr><th>Id</th><th>Name</th><th>Surname</th><th>Email</th></tr></thead>
+    <thead><tr><th>Id</th><th>Name</th><th>Surname</th><th>Email</th><th></th></tr></thead>
     <tbody>
     {% for item in members %} 
     <tr>
@@ -41,6 +42,7 @@
         <td>{{ item.foaf_givenName.first }}</td>
         <td>{{ item.foaf_familyName.first }}</td>
         <td>{{ item.foaf_mbox.first }}</td>
+        <td><a href="{{ url_for('user_books', email=item.foaf_mbox.first)}}">see user's books</a></td>
     {% endfor %}
     </tbody>
 </table>

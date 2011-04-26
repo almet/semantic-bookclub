@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %} Book detail: {{ book.dcterms_title.first }} {% endblock %}
+{% block content %}
+<h2>Book detail: {{ book.dcterms_title.first }}</h2>
+<dl>
+    <dt>Title</dt>
+    <dd>{{ book.dcterms_title.first }}</dd>
+    <dt>Authors</dt>
+    <dd>
+    {% for author in book.dcterms_creator %}
+        {{ author }} {% if not loop.last %},{% endif %}
+    {% endfor %}
+    </dd>
+    <dt>Publisher</dt>
+    <dd>{{ book.dcterms_publisher.first }}</dd>
+    <dt>Issued</dt>
+    <dd>{{ book.dcterms_issued.first }}</dd>
+    <dt>Subject</dt>
+    <dd>{{ book.dcterms_subject.first }}</dd>
+</dl>
+List of persons with this book:
+<ul>
+    {% for owner in owners %}
+    <li>{{ owner[0] }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
+
