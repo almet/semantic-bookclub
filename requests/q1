@@ -1,0 +1,10 @@
+prefix bc: <http://notmyidea.org/bookclub/>
+prefix foaf: <http://xmlns.com/foaf/0.1/>
+prefix book: <http://purl.org/NET/book/vocab/>
+prefix dct: <http://purl.org/dc/terms/>
+
+SELECT ?name WHERE {
+    _:member book:ownsCopyOf _:book .
+    _:book dct:title "A Semantic Web Primer" .
+    _:member foaf:givenName ?name
+}
